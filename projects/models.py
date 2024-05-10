@@ -34,3 +34,33 @@ class Project(models.Model):
 
     def __str__(self) -> str:
         return self.name
+
+
+class CertifyingInstitution(models.Model):
+    name = models.CharField(max_length=100)
+    url = models.URLField(validators=[validate_profile_fields])
+
+    def __str__(self) -> str:
+        return self.name
+
+
+class Certificate(models.Model):
+    name = models.CharField(
+        max_length=100, validators=[validate_profile_fields]
+    )
+    certifying_institution = models.ForeignKey(
+        CertifyingInstitution,
+        on_delete=models.CASCADE,
+        related_name="certificates",
+    )
+    timestamp = models.DateField(
+        auto_now_add=True, validators=[validate_profile_fields]
+    )
+    profiles = models.ManyToManyField(
+        Profile,
+        related_name="certificates",
+        validators=[validate_profile_fields],
+    )
+
+    def __str__(self) -> str:
+        return self.name
